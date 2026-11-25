@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AquaCare | Smart Water Management</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --blue: #0284c7;
+    --cyan: #06b6d4;
+    --dark: #082f49;
+    --light: #f0f9ff;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+html {scroll-behavior: smooth}
+
+body {
+    background: var(--light);
+    color: var(--dark);
+    overflow-x: hidden;
+}
+
+button,input,select,textarea {font: inherit}
+button {cursor: pointer}
+a {text-decoration: none}
+[hidden] {display: none !important}
+
+/* NAVIGATION */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffffed;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 5px 30px #0284c71a;
+}
+
+nav {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 6%;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--blue);
+}
+
+.links {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+}
+
+.links a {
+    color: var(--dark);
+    font-size: 14px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.links a:hover {color: var(--cyan)}
+
+.btn {
+    display: inline-block;
+    padding: 13px 25px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg,#06b6d4,#0369a1);
+    color: white;
+    font-weight: 600;
+    transition: .35s;
+    box-shadow: 0 5px 20px #0284c735;
+}
+
+.btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px #0284c750;
+}
+
+.btn:active {transform: scale(.96)}
+.btn:disabled {opacity: .6;cursor: wait}
+
+.page {
+    display: none;
+    animation: pageIn .6s ease;
+}
+
+.page.active {display: block}
+
+@keyframes pageIn {
+    from {opacity: 0;transform: translateY(20px)}
+    to {opacity: 1;transform: translateY(0)}
+}
+
+/* HERO SECTION */
+
+.hero {
+    min-height: 650px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 80px 8%;
+    background: linear-gradient(125deg,#082f49,#0369a1,#06b6d4);
+    background-size: 250% 250%;
+    animation: gradient 10s ease infinite;
+    color: white;
+}
+
+@keyframes gradient {
+    0%,100% {background-position: 0% 50%}
+    50% {background-position: 100% 50%}
+}
+
+.hero-content {
+    max-width: 700px;
+    z-index: 5;
+    position: relative;
+    animation: slideIn 1s ease;
+}
+
+@keyframes slideIn {
+    from {opacity: 0;transform: translateX(-70px)}
+    to {opacity: 1;transform: translateX(0)}
+}
+
+.hero h1 {
+    font-size: clamp(42px,6vw,76px);
+    line-height: 1.15;
+    margin: 20px 0;
+}
+
+.hero h2 {
+    font-size: clamp(20px,3vw,30px);
+    color: #a5f3fc;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    line-height: 2;
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.outline {
+    border: 2px solid white;
+    background: transparent;
+}
+
+.tag {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: #ffffff25;
+    border: 1px solid #ffffff50;
+    font-size: 13px;
+}
+
+.water-drop {
+    position: absolute;
+    right: 12%;
+    top: 25%;
+    width: 210px;
+    height: 210px;
+    border-radius: 0 70% 70% 70%;
+    background: linear-gradient(135deg,#ffffff95,#22d3ee60);
+    transform: rotate(45deg);
+    box-shadow: inset 0 0 40px #ffffff55,0 0 70px #67e8f955;
+    animation: dropFloat 4s ease-in-out infinite;
+}
+
+@keyframes dropFloat {
+    0%,100% {transform: rotate(45deg) translate(0,0)}
+    50% {transform: rotate(45deg) translate(-15px,-15px)}
+}
+
+/* FLOATING BUBBLES */
+
+.bubble {
+    position: absolute;
+    bottom: -100px;
+    border-radius: 50%;
+    border: 1px solid #ffffff66;
+    background: #ffffff20;
+    pointer-events: none;
+    animation: bubbleUp linear infinite;
+}
+
+@keyframes bubbleUp {
+    0% {transform: translateY(0);opacity: 0}
+    20% {opacity: .8}
+    100% {transform: translateY(-850px);opacity: 0}
+}
+
+/* ANIMATED WATER WAVES */
+
+.waves {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
+}
+
+.wave {
+    position: absolute;
+    width: 200%;
+    height: 100px;
+    animation: waveMove 9s linear infinite;
+}
+
+.wave.second {
+    opacity: .35;
+    animation-direction: reverse;
+    animation-duration: 13s;
+}
+
+@keyframes waveMove {
+    from {transform: translateX(0)}
+    to {transform: translateX(-50%)}
+}
+
+/* SECTIONS AND CARDS */
+
+.section {padding: 80px 7%}
+
+.title {
+    font-size: clamp(28px,4vw,38px);
+    text-align: center;
+    color: var(--blue);
+    margin-bottom: 15px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 40px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 23px;
+}
+
+.card {
+    padding: 35px 22px;
+    background: white;
+    border-radius: 22px;
+    text-align: center;
+    box-shadow: 0 8px 30px #0284c715;
+    transition: .4s;
+}
+
+.card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px #0284c72b;
+}
+
+.card .icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 20px;
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+    50% {transform: translateY(-12px)}
+}
+
+.card h3 {color: var(--blue);margin-bottom: 12px}
+.card p {font-size: 14px;color: #64748b;line-height: 1.8}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(35px);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: .7s;
+}
+
+/* FORMS */
+
+.form-section {
+    min-height: 80vh;
+    padding: 60px 15px;
+    background: linear-gradient(120deg,#dff5ff,#f8fcff);
+}
+
+.form-card {
+    background: white;
+    max-width: 780px;
+    padding: 35px;
+    margin: auto;
+    border-radius: 24px;
+    box-shadow: 0 15px 45px #0284c71a;
+    animation: zoomIn .6s ease;
+}
+
+@keyframes zoomIn {
+    from {opacity: 0;transform: scale(.94)}
+    to {opacity: 1;transform: scale(1)}
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.full {grid-column: 1/-1}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 10px 0 7px;
+}
+
+input,select,textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #cbdce6;
+    border-radius: 9px;
+    outline: none;
+    background: white;
+    transition: .3s;
+}
+
+input:focus,select:focus,textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px #0284c718;
+}
+
+textarea {min-height: 110px;resize: vertical}
+
+.submit {
+    width: 100%;
+    border: none;
+    padding: 15px;
+    margin-top: 24px;
+    border-radius: 10px;
+    background: linear-gradient(135deg,#06b6d4,#0369a1);
+    color: white;
+    font-weight: 700;
+    transition: .3s;
+}
+
+.submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px #0284c745;
+}
+
+.gps {
+    background: #e0f2fe;
+    color: var(--blue);
+    border: none;
+    border-radius: 9px;
+    padding: 12px 18px;
+    margin-top: 12px;
+}
+
+.hint {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.success {
+    background: #dcfce7;
+    padding: 30px;
+    text-align: center;
+    border-radius: 16px;
+    animation: zoomIn .5s ease;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #16a34a;
+    color: white;
+    font-size: 45px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 20px;
+    animation: zoomIn .6s ease;
+}
+
+.complaint-id {
+    font-size: 25px;
+    font-weight: 800;
+    color: var(--blue);
+    margin: 20px 0;
+    overflow-wrap: anywhere;
+}
+
+/* ADMIN LOGIN */
+
+.login-bg {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    background: linear-gradient(135deg,#bae6fd,#f0f9ff,#a5f3fc);
+    background-size: 200% 200%;
+    animation: gradient 8s ease infinite;
+}
+
+.login-card {
+    background: white;
+    width: 100%;
+    max-width: 430px;
+    padding: 35px;
+    border-radius: 24px;
+    box-shadow: 0 15px 50px #0369a130;
+    animation: zoomIn .7s ease;
+}
+
+.login-card h1 {
+    text-align: center;
+    color: var(--blue);
+    margin: 15px 0;
+}
+
+.demo {
+    padding: 15px;
+    background: #e0f2fe;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 2;
+    margin-top: 20px;
+}
+
+/* ADMIN SIDEBAR */
+
+.admin-layout {
+    display: grid;
+    grid-template-columns: 245px minmax(0,1fr);
+    min-height: 85vh;
+}
+
+.sidebar {
+    background: linear-gradient(160deg,#082f49,#075985);
+    color: white;
+    padding: 25px 18px;
+}
+
+.sidebar h2 {margin-bottom: 30px;font-size: 23px}
+
+.sidebar button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    color: white;
+    border: none;
+    margin: 8px 0;
+    padding: 14px;
+    border-radius: 10px;
+    transition: .3s;
+}
+
+.sidebar button:hover,
+.sidebar button.selected {
+    background: #ffffff20;
+    transform: translateX(4px);
+}
+
+.sidebar .logout {
+    background: #dc2626;
+    margin-top: 35px;
+}
+
+.admin-content {
+    padding: 35px;
+    min-width: 0;
+}
+
+.admin-tab {display: none}
+.admin-tab.active {display: block;animation: pageIn .5s ease}
+.admin-content h1 {color: var(--blue);margin-bottom: 10px}
+
+/* DASHBOARD */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.stat {
+    padding: 23px 15px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 5px 25px #0284c714;
+    border-bottom: 4px solid #0284c7;
+    transition: .3s;
+}
+
+.stat:hover {transform: translateY(-7px)}
+.stat h2 {font-size: 32px;color: var(--blue)}
+.stat p {font-size: 12px;color: #64748b}
+.stat:nth-child(2) {border-color: #eab308}
+.stat:nth-child(3) {border-color: #8b5cf6}
+.stat:nth-child(4) {border-color: #3b82f6}
+.stat:nth-child(5) {border-color: #22c55e}
+
+.panel {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    margin: 25px 0;
+    box-shadow: 0 5px 25px #0284c714;
+}
+
+.panel h2 {color: var(--blue);margin-bottom: 20px}
+
+.table-wrap {overflow-x: auto}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+th,td {
+    text-align: left;
+    padding: 14px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 13px;
+}
+
+th {background: #e0f2fe;color: #0369a1}
+tr:hover td {background: #f8fcff}
+
+.small-btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 7px;
+    background: var(--blue);
+    color: white;
+    transition: .3s;
+}
+
+.small-btn:hover {background: var(--dark)}
+
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 25px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.Pending {background: #fef3c7;color: #a16207}
+.Assigned {background: #ede9fe;color: #6d28d9}
+.In-Progress {background: #dbeafe;color: #1d4ed8}
+.Resolved {background: #dcfce7;color: #15803d}
+
+.details p {
+    margin: 10px 0;
+    overflow-wrap: anywhere;
+}
+
+.details img {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 12px;
+    margin: 15px 0;
+}
+
+/* COMPLAINT HISTORY */
+
+.timeline {
+    border-left: 3px solid #bae6fd;
+    margin: 25px 10px;
+    padding-left: 25px;
+}
+
+.timeline-item {
+    position: relative;
+    padding: 16px;
+    margin-bottom: 18px;
+    background: #f0f9ff;
+    border-radius: 10px;
+    overflow-wrap: anywhere;
+    animation: pageIn .5s ease;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -34px;
+    top: 20px;
+    width: 15px;
+    height: 15px;
+    background: #0284c7;
+    border: 3px solid white;
+    border-radius: 50%;
+}
+
+.timeline-item small {color: #64748b}
+
+/* TOAST NOTIFICATION */
+
+#toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 9999;
+    background: #082f49;
+    color: white;
+    padding: 17px 25px;
+    border-radius: 12px;
+    max-width: calc(100% - 50px);
+    box-shadow: 0 8px 25px #0003;
+    transform: translateY(150px);
+    opacity: 0;
+    transition: .4s;
+}
+
+#toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* MODAL */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: #082f4980;
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal-box {
+    background: white;
+    border-radius: 20px;
+    padding: 35px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    animation: zoomIn .4s ease;
+}
+
+.modal-box p {margin: 20px 0}
+.danger {background: #dc2626}
+.cancel {background: #64748b}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    background: #082f49;
+    color: white;
+    line-height: 2;
+}
+
+footer h2 {color: #67e8f9}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px) {
+    .stats {grid-template-columns: repeat(3,1fr)}
+    .water-drop {opacity: .25}
+    .cards {grid-template-columns: repeat(2,1fr)}
+}
+
+@media(max-width:750px) {
+    nav {justify-content: center}
+    .links {justify-content: center;gap: 12px}
+    .hero {min-height: 600px;padding: 55px 7%}
+    .water-drop {display: none}
+    .form-grid,.cards {grid-template-columns: 1fr}
+    .form-card {padding: 22px}
+    .admin-layout {grid-template-columns: 1fr}
+    .sidebar {padding: 15px}
+    .sidebar h2 {margin-bottom: 10px}
+    .sidebar button {display: inline-block;width: auto}
+    .sidebar .logout {margin-top: 8px}
+    .admin-content {padding: 18px}
+    .stats {grid-template-columns: repeat(2,1fr)}
+    .panel {padding: 18px}
+}
+
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+    .reveal {opacity: 1;transform: none}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+
+<header>
+<nav>
+    <a class="logo" href="#home">💧 AquaCare</a>
+
+    <div class="links">
+        <a href="#home">Home</a>
+        <a href="#report">Report Problem</a>
+        <a href="#track">Track Complaint</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <a href="#login" class="btn">Admin Login</a>
+</nav>
+</header>
+
+<!-- HOME PAGE -->
+
+<section id="home" class="page active">
+
+<div class="hero">
+
+    <div class="hero-content">
+        <span class="tag">🌍 Smart Water Conservation Initiative</span>
+
+        <h1>Every Drop.<br>Every Life.</h1>
+
+        <h2>Smart Water Waste & Leakage Reporting System</h2>
+
+        <p>Report water leakage, damaged pipelines and water wastage.
+        Together, we can protect our water resources and build a
+        sustainable future.</p>
+
+        <div class="hero-buttons">
+            <a href="#report" class="btn">Report a Problem →</a>
+            <a href="#track" class="btn outline">Track Complaint</a>
+        </div>
+    </div>
+
+    <div class="water-drop"></div>
+
+    <div class="waves">
+        <svg class="wave second" viewBox="0 0 1440 100"
+             preserveAspectRatio="none">
+            <path fill="#ffffff"
+             d="M0 50 Q180 0 360 50 T720 50 T1080 50 T1440 50 V100 H0Z"/>
+        </svg>
+
+        <svg class="wave" viewBox="0 0 1440 100"
+             preserveAspectRatio="none">
+            <path fill="#f0f9ff"
+             d="M0 65 Q180 15 360 65 T720 65 T1080 65 T1440 65 V100 H0Z"/>
+        </svg>
+    </div>
+
+</div>
+
+<div class="section">
+    <h2 class="title">Our Services</h2>
+    <p class="subtitle">A smarter approach to water management</p>
+
+    <div class="cards">
+        <div class="card reveal">
+            <span class="icon">💧</span>
+            <h3>Report Leakage</h3>
+            <p>Report damaged pipes and water leakage without registration.</p>
+        </div>
+
+        <div class="card reveal">
+            <span class="icon">📍</span>
+            <h3>GPS Location</h3>
+            <p>Capture the location of water-related problems.</p>
+        </div>
+
+        <div class="card reveal">
+            <span class="icon">🛠️</span>
+            <h3>Maintenance Teams</h3>
+            <p>Assign complaints to maintenance teams for action.</p>
+        </div>
+
+        <div class="card reveal">
+            <span class="icon">📊</span>
+            <h3>Track Progress</h3>
+            <p>Check complaint status, history and administrator responses.</p>
+        </div>
+    </div>
+</div>
+
+<div class="section" style="background:#e0f2fe">
+    <h2 class="title">How It Works</h2>
+    <p class="subtitle">Four simple steps to protect water</p>
+
+    <div class="cards">
+        <div class="card reveal"><span class="icon">📝</span><h3>01. Report</h3><p>Submit the problem.</p></div>
+        <div class="card reveal"><span class="icon">👨‍💻</span><h3>02. Assign</h3><p>Admin assigns a team.</p></div>
+        <div class="card reveal"><span class="icon">🔧</span><h3>03. Repair</h3><p>Team works on the issue.</p></div>
+        <div class="card reveal"><span class="icon">✅</span><h3>04. Resolve</h3><p>Complaint is resolved.</p></div>
+    </div>
+</div>
+
+</section>
+
+<!-- REPORT PAGE -->
+
+<section id="report" class="page">
+<div class="form-section">
+<div class="form-card">
+
+    <h1 class="title">Report Water Problem</h1>
+    <p class="subtitle">No registration or login required</p>
+
+    <form id="reportForm">
+
+        <div class="form-grid">
+
+            <div>
+                <label>Full Name *</label>
+                <input id="residentName" required placeholder="Your full name">
+            </div>
+
+            <div>
+                <label>Mobile Number *</label>
+                <input id="phone" type="tel" pattern="[0-9]{10}"
+                       maxlength="10" required placeholder="10 digit number">
+            </div>
+
+            <div class="full">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="Optional">
+            </div>
+
+            <div>
+                <label>Area Name *</label>
+                <input id="area" required placeholder="Enter area">
+            </div>
+
+            <div>
+                <label>City *</label>
+                <input id="city" required placeholder="Enter city">
+            </div>
+
+            <div>
+                <label>Pincode *</label>
+                <input id="pincode" required pattern="[0-9]{6}"
+                       maxlength="6" placeholder="6 digit pincode">
+            </div>
+
+            <div>
+                <label>Complaint Type *</label>
+                <select id="complaintType" required>
+                    <option value="">Select type</option>
+                    <option>Water Leakage</option>
+                    <option>Pipe Damage</option>
+                    <option>Water Wastage</option>
+                    <option>No Water Supply</option>
+                    <option>Overflowing Water Tank</option>
+                    <option>Water Contamination</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div class="full">
+                <label>Detailed Location *</label>
+                <input id="locationDetails" required placeholder="Street, landmark, house number">
+            </div>
+
+            <div>
+                <label>Latitude</label>
+                <input id="latitude" type="number" step="any" min="-90" max="90">
+            </div>
+
+            <div>
+                <label>Longitude</label>
+                <input id="longitude" type="number" step="any" min="-180" max="180">
+            </div>
+
+            <div class="full">
+                <button type="button" class="gps" onclick="getLocation()">
+                    📍 Get Current GPS Location
+                </button>
+                <p class="hint" id="gpsMessage">GPS location is optional.</p>
+            </div>
+
+            <div class="full">
+                <label>Complaint Description *</label>
+                <textarea id="description" required placeholder="Describe the problem..."></textarea>
+            </div>
+
+            <div>
+                <label>Priority</label>
+                <select id="priority">
+                    <option>Low</option>
+                    <option selected>Medium</option>
+                    <option>High</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Upload Photo</label>
+                <input type="file" id="photo" accept="image/jpeg,image/png,image/webp">
+                <p class="hint">Maximum size: 1 MB</p>
+            </div>
+
+        </div>
+
+        <button class="submit" id="reportSubmit">Submit Complaint</button>
+
+    </form>
+
+    <div class="success" id="reportSuccess" hidden>
+        <div class="success-icon">✓</div>
+        <h2>Complaint Submitted!</h2>
+        <p>Your unique complaint ID is</p>
+        <div class="complaint-id" id="generatedID"></div>
+        <button class="btn" onclick="copyID()">Copy Complaint ID</button>
+        <br><br>
+        <a href="#track" class="btn">Track Complaint</a>
+        <button class="submit" onclick="resetReport()">Submit Another Complaint</button>
+    </div>
+
+</div>
+</div>
+</section>
+
+<!-- TRACK COMPLAINT -->
+
+<section id="track" class="page">
+<div class="form-section">
+<div class="form-card">
+
+    <h1 class="title">Track Complaint</h1>
+    <p class="subtitle">View status and maintenance progress</p>
+
+    <form id="trackForm">
+        <label>Complaint ID</label>
+        <input id="trackID" required placeholder="Enter complaint ID">
+
+        <label>Mobile Number</label>
+        <input id="trackPhone" required pattern="[0-9]{10}" maxlength="10">
+
+        <button class="submit">Track Complaint</button>
+    </form>
+
+    <div id="trackResult" hidden></div>
+
+</div>
+</div>
+</section>
+
+<!-- ABOUT -->
+
+<section id="about" class="page">
+<div class="section" style="text-align:center">
+
+    <h1 class="title">About AquaCare</h1>
+    <p class="subtitle">Technology for a sustainable future</p>
+
+    <p style="max-width:850px;margin:auto;line-height:2">
+        AquaCare is a Smart Water Waste and Leakage Reporting System
+        designed to connect residents, administrators and maintenance
+        teams through a digital complaint management platform.
+        Our objective is to reduce water wastage and improve water
+        resource management.
+    </p>
+
+    <br><br>
+
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+
+        <div class="card">
+            <span class="icon">🎯</span>
+            <h3>Our Mission</h3>
+            <p>Reduce water wastage through responsible reporting.</p>
+        </div>
+
+        <div class="card">
+            <span class="icon">🌍</span>
+            <h3>Our Vision</h3>
+            <p>A sustainable future where every drop matters.</p>
+        </div>
+
+        <div class="card">
+            <span class="icon">🤝</span>
+            <h3>Our Community</h3>
+            <p>Connecting citizens and maintenance teams.</p>
+        </div>
+
+    </div>
+</div>
+</section>
+
+<!-- CONTACT -->
+
+<section id="contact" class="page">
+    <div class="section">
+
+        <h1 class="title">Contact Us</h1>
+        <p class="subtitle">
+            We're here to help you with water-related problems.
+        </p>
+
+        <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(250px,1fr))">
+
+            <div class="card">
+                <span class="icon">📞</span>
+                <h3>Mobile Number</h3>
+                <p>+91 XXXXX XXXXX</p>
+                <br>
+                <a href="tel:+91XXXXXXXXXX" class="btn">
+                    Call Now
+                </a>
+            </div>
+
+            <div class="card">
+                <span class="icon">📧</span>
+                <h3>Email Address</h3>
+                <p>support@aquacare.example</p>
+                <br>
+                <a href="mailto:support@aquacare.example" class="btn">
+                    Email Us
+                </a>
+            </div>
+
+            <div class="card">
+                <span class="icon">🕒</span>
+                <h3>Working Hours</h3>
+                <p>Monday - Saturday</p>
+                <p>9:00 AM - 6:00 PM</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ADMIN LOGIN -->
+
+<section id="login" class="page">
+<div class="login-bg">
+<div class="login-card">
+
+    <div style="text-align:center;font-size:55px">🔐</div>
+
+    <h1>Admin Login</h1>
+    <p style="text-align:center;color:#64748b">AquaCare Administration</p>
+
+    <form id="loginForm">
+        <label>Admin Email</label>
+        <input type="email" id="adminEmail" required>
+
+        <label>Password</label>
+        <input type="password" id="adminPassword" required>
+
+        <label>
+            <input type="checkbox" style="width:auto" onchange="togglePassword(this)">
+            Show Password
+        </label>
+
+        <button class="submit">Login</button>
+
+        <p id="loginError" style="color:red;text-align:center;margin-top:15px"></p>
+    </form>
+
+    <div class="demo">
+        <b>Demo Email:</b> admin@aquacare.com<br>
+        <b>Demo Password:</b> admin123
+    </div>
+
+</div>
+</div>
+</section>
+
+<!-- ADMIN DASHBOARD -->
+
+<section id="admin" class="page">
+
+<div class="admin-layout">
+
+    <aside class="sidebar">
+        <h2>💧 AquaCare</h2>
+
+        <button data-tab="overview" onclick="adminTab('overview')">▦ Dashboard</button>
+        <button data-tab="complaints" onclick="adminTab('complaints')">📋 Complaints</button>
+        <button data-tab="residents" onclick="adminTab('residents')">👥 Residents</button>
+        <button data-tab="areas" onclick="adminTab('areas')">📍 Areas</button>
+        <button data-tab="teams" onclick="adminTab('teams')">🛠️ Maintenance Teams</button>
+        <button data-tab="assignments" onclick="adminTab('assignments')">📌 Assignments</button>
+        <button data-tab="history" onclick="adminTab('history')">🕒 Status History</button>
+        <button data-tab="reports" onclick="adminTab('reports')">📊 Reports</button>
+        <button class="logout" onclick="el('logoutModal').hidden=false">↪ Logout</button>
+    </aside>
+
+    <main class="admin-content">
+
+        <!-- OVERVIEW -->
+
+        <div id="overview" class="admin-tab active">
+            <h1>Admin Dashboard</h1>
+            <p>Welcome to the AquaCare management system.</p>
+
+            <div class="stats">
+                <div class="stat"><h2 id="total">0</h2><p>Total Complaints</p></div>
+                <div class="stat"><h2 id="pending">0</h2><p>Pending</p></div>
+                <div class="stat"><h2 id="assigned">0</h2><p>Assigned</p></div>
+                <div class="stat"><h2 id="progress">0</h2><p>In Progress</p></div>
+                <div class="stat"><h2 id="resolved">0</h2><p>Resolved</p></div>
+            </div>
+
+            <div class="panel">
+                <h2>Complaint Overview</h2>
+                <div id="statusChart"></div>
+            </div>
+
+            <div class="panel">
+                <h2>Quick Actions</h2>
+                <button class="btn" onclick="adminTab('complaints')">Manage Complaints</button>
+                <br><br>
+                <button class="btn" onclick="adminTab('teams')">Maintenance Teams</button>
+            </div>
+        </div>
+
+        <!-- COMPLAINTS -->
+
+        <div id="complaints" class="admin-tab">
+            <h1>Manage Complaints</h1>
+
+            <div class="panel">
+
+                <input id="search" placeholder="Search complaints..." oninput="renderAdmin()">
+
+                <br><br>
+
+                <select id="statusFilter" onchange="renderAdmin()">
+                    <option value="">All Statuses</option>
+                    <option>Pending</option>
+                    <option>Assigned</option>
+                    <option>In Progress</option>
+                    <option>Resolved</option>
+                </select>
+
+                <br><br>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Complaint ID</th>
+                                <th>Problem</th>
+                                <th>Area</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="complaintRows"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel details" id="complaintDetails" hidden>
+                <h2>Complaint Details</h2>
+                <div id="detailContent"></div>
+
+                <label>Assign Maintenance Team</label>
+                <select id="assignTeam"></select>
+
+                <button class="submit" onclick="assignComplaint()">Assign Team</button>
+
+                <label>Update Status</label>
+                <select id="updateStatus">
+                    <option>Pending</option>
+                    <option>Assigned</option>
+                    <option>In Progress</option>
+                    <option>Resolved</option>
+                </select>
+
+                <label>Admin Remarks / Response</label>
+                <textarea id="remarks" placeholder="Enter response..."></textarea>
+
+                <button class="submit" onclick="updateComplaint()">Save Status & Response</button>
+
+                <button class="submit cancel" onclick="el('complaintDetails').hidden=true">Close</button>
+            </div>
+        </div>
+
+        <!-- RESIDENTS -->
+
+        <div id="residents" class="admin-tab">
+            <h1>Residents</h1>
+            <div class="panel table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Name</th><th>Phone</th><th>Email</th></tr>
+                    </thead>
+                    <tbody id="residentRows"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- AREAS -->
+
+        <div id="areas" class="admin-tab">
+            <h1>Area Management</h1>
+            <div class="panel table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Area ID</th><th>Area Name</th><th>City</th><th>Pincode</th></tr>
+                    </thead>
+                    <tbody id="areaRows"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MAINTENANCE TEAMS -->
+
+        <div id="teams" class="admin-tab">
+            <h1>Maintenance Teams</h1>
+
+            <div class="panel">
+                <h2>Add Maintenance Team</h2>
+
+                <form id="teamForm">
+                    <div class="form-grid">
+                        <div>
+                            <label>Team Name</label>
+                            <input id="teamName" required>
+                        </div>
+                        <div>
+                            <label>Team Leader</label>
+                            <input id="teamLeader" required>
+                        </div>
+                        <div>
+                            <label>Phone Number</label>
+                            <input id="teamPhone" required pattern="[0-9]{10}" maxlength="10">
+                        </div>
+                        <div>
+                            <label>Availability</label>
+                            <select id="availability">
+                                <option>Available</option>
+                                <option>Unavailable</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="submit">Add Team</button>
+                </form>
+            </div>
+
+            <div class="panel table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Team</th><th>Leader</th><th>Phone</th><th>Availability</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="teamRows"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ASSIGNMENTS -->
+
+        <div id="assignments" class="admin-tab">
+            <h1>Complaint Assignments</h1>
+            <div class="panel table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Complaint ID</th><th>Team</th><th>Admin</th><th>Assigned Date</th></tr>
+                    </thead>
+                    <tbody id="assignmentRows"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- HISTORY -->
+
+        <div id="history" class="admin-tab">
+            <h1>Complaint Status History</h1>
+            <div class="panel" id="historyContent"></div>
+        </div>
+
+        <!-- REPORTS -->
+
+        <div id="reports" class="admin-tab">
+            <h1>Complaint Reports</h1>
+            <div class="panel table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Report ID</th><th>Complaint ID</th><th>Resident</th><th>Report Date</th><th>Description</th></tr>
+                    </thead>
+                    <tbody id="reportRows"></tbody>
+                </table>
+            </div>
+
+            <div class="panel">
+                <h2>Contact Messages</h2>
+                <div id="messageContent"></div>
+            </div>
+        </div>
+
+    </main>
+</div>
+</section>
+
+<!-- LOGOUT MODAL -->
+
+<div class="modal" id="logoutModal" hidden>
+    <div class="modal-box">
+        <div style="font-size:45px">🚪</div>
+        <h2>Confirm Logout</h2>
+        <p>Are you sure you want to logout?</p>
+
+        <button class="btn cancel" onclick="el('logoutModal').hidden=true">Cancel</button>
+        <button class="btn danger" onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<footer>
+    <h2>💧 AquaCare</h2>
+    <p>Smart Water Waste & Leakage Reporting System</p>
+    <p>Every Drop Counts. Every Action Matters.</p>
+    <p>© 2026 AquaCare</p>
+</footer>
+
+<script>
+
+/* HELPER FUNCTIONS */
+
+const el = id => document.getElementById(id);
+const val = id => el(id).value.trim();
+const now = () => new Date().toLocaleString();
+
+const escapeHTML = value => String(value ?? "").replace(
+    /[&<>"']/g,
+    c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]
+);
+
+const safe = escapeHTML;
+
+let toastTimer;
+
+function toast(message) {
+    el("toast").textContent = message;
+    el("toast").classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        el("toast").classList.remove("show");
+    },3500);
+}
+
+/* LOCAL DATABASE */
+
+const DB_KEY = "aquacare_database_v3";
+
+function createID(prefix) {
+    return prefix + "-" + Date.now().toString(36).toUpperCase()
+        + Math.random().toString(36).slice(2,6).toUpperCase();
+}
+
+function initialDatabase() {
+    return {
+        Residents: [],
+        Areas: [],
+        Maintenance_Teams: [
+            {
+                team_id: "TEAM-101",
+                team_name: "Pipeline Repair Team",
+                team_leader: "Demo Leader 1",
+                phone: "0000000000",
+                availability: "Available"
+            },
+            {
+                team_id: "TEAM-102",
+                team_name: "Water Supply Team",
+                team_leader: "Demo Leader 2",
+                phone: "0000000000",
+                availability: "Available"
+            }
+        ],
+        Admin: [
+            {
+                admin_id: "ADMIN-01",
+                username: "Administrator",
+                email: "admin@aquacare.com"
+            }
+        ],
+        Complaints: [],
+        Complaint_Reports: [],
+        Assignments: [],
+        Complaint_Status_History: [],
+        Contact_Messages: []
+    };
+}
+
+function getDB() {
+    return JSON.parse(localStorage.getItem(DB_KEY))
+        || initialDatabase();
+}
+
+function saveDB(db) {
+    try {
+        localStorage.setItem(DB_KEY,JSON.stringify(db));
+        return true;
+    } catch(error) {
+        toast("Storage unavailable or full. Unable to save data.");
+        return false;
+    }
+}
+
+function isAdmin() {
+    return sessionStorage.getItem("aquacareAdmin") === "yes";
+}
+
+function requireAdmin() {
+    if(!isAdmin()) {
+        location.hash = "login";
+        return false;
+    }
+    return true;
+}
+
+/* PAGE NAVIGATION */
+
+function navigate() {
+    let page = location.hash.slice(1) || "home";
+
+    const pages = ["home","report","track","about","contact","login","admin"];
+
+    if(!pages.includes(page)) page = "home";
+
+    if(page === "admin" && !isAdmin()) page = "login";
+    if(page === "login" && isAdmin()) page = "admin";
+
+    document.querySelectorAll(".page").forEach(p => {
+        p.classList.toggle("active",p.id === page);
+    });
+
+    if(page === "admin") renderAdmin();
+
+    window.scrollTo(0,0);
+}
+
+window.addEventListener("hashchange",navigate);
+
+/* WATER BUBBLES */
+
+const hero = document.querySelector(".hero");
+
+for(let i=0;i<25;i++) {
+    const bubble = document.createElement("span");
+    const size = Math.random()*45+8;
+
+    bubble.className = "bubble";
+    bubble.style.width = size+"px";
+    bubble.style.height = size+"px";
+    bubble.style.left = Math.random()*100+"%";
+    bubble.style.animationDuration = Math.random()*8+5+"s";
+    bubble.style.animationDelay = Math.random()*10+"s";
+
+    hero.appendChild(bubble);
+}
+
+/* SCROLL REVEAL */
+
+const cards = document.querySelectorAll(".reveal");
+
+if("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+            }
+        });
+    },{threshold:.1});
+
+    cards.forEach(card => observer.observe(card));
+} else {
+    cards.forEach(card => card.classList.add("visible"));
+}
+
+/* GPS LOCATION */
+
+function getLocation() {
+
+    if(!navigator.geolocation) {
+        toast("GPS is not supported by this browser.");
+        return;
+    }
+
+    el("gpsMessage").textContent = "Detecting location...";
+
+    navigator.geolocation.getCurrentPosition(position => {
+
+        el("latitude").value = position.coords.latitude.toFixed(7);
+        el("longitude").value = position.coords.longitude.toFixed(7);
+
+        el("gpsMessage").textContent = "Location captured successfully.";
+
+        toast("GPS location captured!");
+
+    },error => {
+
+        el("gpsMessage").textContent =
+            "Unable to get GPS location. Enter coordinates manually or leave blank.";
+
+    },{enableHighAccuracy:true,timeout:15000});
+}
+
+/* REPORT COMPLAINT */
+
+el("reportForm").addEventListener("submit",async function(e) {
+    e.preventDefault();
+
+    const file = el("photo").files[0];
+
+    if(file && (
+        !["image/jpeg","image/png","image/webp"].includes(file.type)
+        || file.size > 1024*1024
+    )) {
+        toast("Choose a JPG, PNG or WebP image under 1 MB.");
+        return;
+    }
+
+    el("reportSubmit").disabled = true;
+
+    try {
+        let image = null;
+
+        if(file) {
+            image = await new Promise((resolve,reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        const db = getDB();
+
+        // Residents table
+
+        let resident = db.Residents.find(r => r.phone === val("phone"));
+
+        if(!resident) {
+            resident = {
+                resident_id: createID("RES"),
+                name: val("residentName"),
+                phone: val("phone"),
+                email: val("email")
+            };
+
+            db.Residents.push(resident);
+        }
+
+        // Areas table
+
+        let area = db.Areas.find(a =>
+            a.area_name.toLowerCase() === val("area").toLowerCase()
+            && a.city.toLowerCase() === val("city").toLowerCase()
+            && a.pincode === val("pincode")
+        );
+
+        if(!area) {
+            area = {
+                area_id: createID("AREA"),
+                area_name: val("area"),
+                city: val("city"),
+                pincode: val("pincode")
+            };
+
+            db.Areas.push(area);
+        }
+
+        // Complaints table
+
+        const complaint = {
+            complaint_id: createID("WTR"),
+            area_id: area.area_id,
+            complaint_type: val("complaintType"),
+            description: val("description"),
+            location_details: val("locationDetails"),
+            latitude: val("latitude") || null,
+            longitude: val("longitude") || null,
+            image_path: image,
+            priority: val("priority"),
+            complaint_date: now(),
+            status: "Pending"
+        };
+
+        db.Complaints.push(complaint);
+
+        // Complaint Reports table
+
+        db.Complaint_Reports.push({
+            report_id: createID("REP"),
+            complaint_id: complaint.complaint_id,
+            resident_id: resident.resident_id,
+            report_date: now(),
+            description: complaint.description,
+            image_path: image
+        });
+
+        // Complaint Status History table
+
+        db.Complaint_Status_History.push({
+            history_id: createID("HIS"),
+            complaint_id: complaint.complaint_id,
+            old_status: null,
+            new_status: "Pending",
+            updated_by: "Resident",
+            remarks: "Complaint submitted successfully.",
+            updated_at: now()
+        });
+
+        if(!saveDB(db)) return;
+
+        el("generatedID").textContent = complaint.complaint_id;
+        el("trackID").value = complaint.complaint_id;
+        el("trackPhone").value = resident.phone;
+
+        el("reportForm").hidden = true;
+        el("reportSuccess").hidden = false;
+
+        toast("Complaint submitted successfully!");
+
+    } catch(error) {
+        toast("Unable to submit complaint.");
+    } finally {
+        el("reportSubmit").disabled = false;
+    }
+});
+
+function resetReport() {
+    el("reportForm").reset();
+    el("reportSuccess").hidden = true;
+    el("reportForm").hidden = false;
+}
+
+async function copyID() {
+    try {
+        await navigator.clipboard.writeText(el("generatedID").textContent);
+        toast("Complaint ID copied!");
+    } catch(error) {
+        toast("Please copy the complaint ID manually.");
+    }
+}
+
+/* STATUS BADGES */
+
+function statusBadge(status) {
+    const statuses = ["Pending","Assigned","In Progress","Resolved"];
+    const value = statuses.includes(status) ? status : "Pending";
+
+    return `<span class="status ${value.replaceAll(" ","-")}">${safe(value)}</span>`;
+}
+
+/* STATUS HISTORY */
+
+function timelineHTML(history) {
+    if(!history.length) return "<p>No history available.</p>";
+
+    return `<div class="timeline">
+        ${history.map(h => `
+            <div class="timeline-item">
+                <strong>${safe(h.new_status)}</strong>
+                <p>${safe(h.remarks || "Status updated.")}</p>
+                <small>${safe(h.updated_by)} · ${safe(h.updated_at)}</small>
+            </div>
+        `).join("")}
+    </div>`;
+}
+
+/* TRACK COMPLAINT */
+
+el("trackForm").addEventListener("submit",function(e) {
+    e.preventDefault();
+
+    const db = getDB();
+    const id = val("trackID").toUpperCase();
+    const resident = db.Residents.find(r => r.phone === val("trackPhone"));
+
+    const report = resident && db.Complaint_Reports.find(r =>
+        r.complaint_id === id && r.resident_id === resident.resident_id
+    );
+
+    const complaint = report && db.Complaints.find(c => c.complaint_id === id);
+
+    const result = el("trackResult");
+    result.hidden = false;
+
+    if(!complaint) {
+        result.innerHTML = "<p style='color:red;margin-top:20px'>Complaint not found. Check your ID and mobile number.</p>";
+        return;
+    }
+
+    const area = db.Areas.find(a => a.area_id === complaint.area_id);
+
+    const assignment = db.Assignments.filter(a =>
+        a.complaint_id === complaint.complaint_id
+    ).at(-1);
+
+    const team = assignment && db.Maintenance_Teams.find(t =>
+        t.team_id === assignment.team_id
+    );
+
+    const history = db.Complaint_Status_History.filter(h =>
+        h.complaint_id === complaint.complaint_id
+    );
+
+    result.innerHTML = `
+        <div class="panel details">
+            <h2>Complaint Information</h2>
+            <p><b>ID:</b> ${safe(complaint.complaint_id)}</p>
+            <p><b>Problem:</b> ${safe(complaint.complaint_type)}</p>
+            <p><b>Area:</b> ${safe(area?.area_name)}, ${safe(area?.city)}</p>
+            <p><b>Status:</b> ${statusBadge(complaint.status)}</p>
+            <p><b>Maintenance Team:</b> ${safe(team?.team_name || "Not assigned")}</p>
+            <p><b>Submitted:</b> ${safe(complaint.complaint_date)}</p>
+
+            <br>
+            <h2>Complaint Timeline</h2>
+            ${timelineHTML(history)}
+        </div>
+    `;
+});
+
+/* ADMIN LOGIN */
+
+function togglePassword(checkbox) {
+    el("adminPassword").type = checkbox.checked ? "text" : "password";
+}
+
+el("loginForm").addEventListener("submit",function(e) {
+    e.preventDefault();
+
+    if(val("adminEmail") === "admin@aquacare.com"
+       && val("adminPassword") === "admin123") {
+
+        sessionStorage.setItem("aquacareAdmin","yes");
+
+        el("loginError").textContent = "";
+        this.reset();
+
+        location.hash = "admin";
+
+        adminTab("overview");
+        toast("Welcome, Administrator!");
+
+    } else {
+        el("loginError").textContent = "Invalid email or password.";
+    }
+});
+
+/* ADMIN TABS */
+
+function adminTab(id) {
+    if(!requireAdmin()) return;
+
+    document.querySelectorAll(".admin-tab").forEach(tab => {
+        tab.classList.toggle("active",tab.id === id);
+    });
+
+    document.querySelectorAll(".sidebar button").forEach(button => {
+        button.classList.toggle("selected",button.dataset.tab === id);
+    });
+
+    renderAdmin();
+}
+
+/* DASHBOARD STATISTICS */
+
+function animateNumber(id,target) {
+    const node = el(id);
+
+    if(node.animationFrame) {
+        cancelAnimationFrame(node.animationFrame);
+    }
+
+    const start = Number(node.textContent) || 0;
+    const started = performance.now();
+
+    function frame(time) {
+        const progress = Math.min((time-started)/500,1);
+        node.textContent = Math.round(start+(target-start)*progress);
+
+        if(progress<1) {
+            node.animationFrame = requestAnimationFrame(frame);
+        }
+    }
+
+    node.animationFrame = requestAnimationFrame(frame);
+}
+
+function renderAdmin() {
+    if(!isAdmin()) return;
+
+    const db = getDB();
+
+    const complaints = db.Complaints;
+
+    const counts = [
+        complaints.length,
+        complaints.filter(c => c.status==="Pending").length,
+        complaints.filter(c => c.status==="Assigned").length,
+        complaints.filter(c => c.status==="In Progress").length,
+        complaints.filter(c => c.status==="Resolved").length
+    ];
+
+    ["total","pending","assigned","progress","resolved"]
+        .forEach((id,index) => animateNumber(id,counts[index]));
+
+    el("statusChart").innerHTML =
+        ["Pending","Assigned","In Progress","Resolved"].map((status,i) => {
+
+            const percent = complaints.length
+                ? counts[i+1]/complaints.length*100
+                : 0;
+
+            return `
+                <p style="margin:15px 0 6px">${status}: ${counts[i+1]}</p>
+                <div style="height:14px;background:#e0f2fe;border-radius:20px;overflow:hidden">
+                    <div style="width:${percent}%;height:100%;background:linear-gradient(90deg,#06b6d4,#0284c7);border-radius:20px"></div>
+                </div>
+            `;
+        }).join("");
+
+    /* Complaint table */
+
+    const search = val("search").toLowerCase();
+    const filter = val("statusFilter");
+
+    const filtered = complaints.filter(c => {
+
+        const area = db.Areas.find(a => a.area_id===c.area_id);
+
+        const matches = [
+            c.complaint_id,c.complaint_type,area?.area_name,
+            c.location_details
+        ].some(x => String(x||"").toLowerCase().includes(search));
+
+        return matches && (!filter || c.status===filter);
+    });
+
+    el("complaintRows").innerHTML = filtered.map(c => {
+        const area = db.Areas.find(a => a.area_id===c.area_id);
+
+        return `
+            <tr>
+                <td>${safe(c.complaint_id)}</td>
+                <td>${safe(c.complaint_type)}</td>
+                <td>${safe(area?.area_name)}</td>
+                <td>${safe(c.priority)}</td>
+                <td>${statusBadge(c.status)}</td>
+                <td><button class="small-btn" data-complaint="${safe(c.complaint_id)}">View</button></td>
+            </tr>
+        `;
+    }).join("") || "<tr><td colspan='6'>No complaints found.</td></tr>";
+
+    /* Residents table */
+
+    el("residentRows").innerHTML = db.Residents.map(r => `
+        <tr>
+            <td>${safe(r.resident_id)}</td>
+            <td>${safe(r.name)}</td>
+            <td>${safe(r.phone)}</td>
+            <td>${safe(r.email || "-")}</td>
+        </tr>
+    `).join("") || "<tr><td colspan='4'>No residents found.</td></tr>";
+
+    /* Areas table */
+
+    el("areaRows").innerHTML = db.Areas.map(a => `
+        <tr>
+            <td>${safe(a.area_id)}</td>
+            <td>${safe(a.area_name)}</td>
+            <td>${safe(a.city)}</td>
+            <td>${safe(a.pincode)}</td>
+        </tr>
+    `).join("") || "<tr><td colspan='4'>No areas found.</td></tr>";
+
+    /* Teams table */
+
+    el("teamRows").innerHTML = db.Maintenance_Teams.map(t => `
+        <tr>
+            <td>${safe(t.team_id)}</td>
+            <td>${safe(t.team_name)}</td>
+            <td>${safe(t.team_leader)}</td>
+            <td>${safe(t.phone)}</td>
+            <td>${safe(t.availability)}</td>
+            <td><button class="small-btn" data-team="${safe(t.team_id)}">Toggle Availability</button></td>
+        </tr>
+    `).join("");
+
+    /* Assignments table */
+
+    el("assignmentRows").innerHTML = db.Assignments.map(a => {
+        const team = db.Maintenance_Teams.find(t => t.team_id===a.team_id);
+
+        return `
+            <tr>
+                <td>${safe(a.assignment_id)}</td>
+                <td>${safe(a.complaint_id)}</td>
+                <td>${safe(team?.team_name)}</td>
+                <td>${safe(a.admin_id)}</td>
+                <td>${safe(a.assigned_date)}</td>
+            </tr>
+        `;
+    }).join("") || "<tr><td colspan='5'>No assignments found.</td></tr>";
+
+    /* Reports table */
+
+    el("reportRows").innerHTML = db.Complaint_Reports.map(r => {
+        const resident = db.Residents.find(x => x.resident_id===r.resident_id);
+
+        return `
+            <tr>
+                <td>${safe(r.report_id)}</td>
+                <td>${safe(r.complaint_id)}</td>
+                <td>${safe(resident?.name)}</td>
+                <td>${safe(r.report_date)}</td>
+                <td>${safe(r.description)}</td>
+            </tr>
+        `;
+    }).join("") || "<tr><td colspan='5'>No reports found.</td></tr>";
+
+    /* Status history */
+
+    el("historyContent").innerHTML =
+        db.Complaint_Status_History.map(h => `
+            <div class="timeline-item">
+                <strong>${safe(h.complaint_id)}</strong>
+                <p>${safe(h.old_status || "New")} → ${safe(h.new_status)}</p>
+                <p>${safe(h.remarks)}</p>
+                <small>${safe(h.updated_at)}</small>
+            </div>
+        `).join("") || "<p>No status history available.</p>";
+
+    el("messageContent").innerHTML = db.Contact_Messages.map(m => `
+        <div class="timeline-item">
+            <b>${safe(m.name)}</b>
+            <p>${safe(m.email)}</p>
+            <p>${safe(m.message)}</p>
+        </div>
+    `).join("") || "<p>No messages.</p>";
+}
+
+/* VIEW COMPLAINT */
+
+let selectedComplaint = null;
+
+el("complaintRows").addEventListener("click",e => {
+    const button = e.target.closest("[data-complaint]");
+
+    if(button) openComplaint(button.dataset.complaint);
+});
+
+function openComplaint(id) {
+    if(!requireAdmin()) return;
+
+    const db = getDB();
+
+    const c = db.Complaints.find(x => x.complaint_id===id);
+    if(!c) return;
+
+    selectedComplaint = id;
+
+    const area = db.Areas.find(a => a.area_id===c.area_id);
+
+    const report = db.Complaint_Reports.find(r => r.complaint_id===id);
+
+    const resident = db.Residents.find(r => r.resident_id===report?.resident_id);
+
+    el("detailContent").innerHTML = `
+        <p><b>ID:</b> ${safe(c.complaint_id)}</p>
+        <p><b>Resident:</b> ${safe(resident?.name)}</p>
+        <p><b>Phone:</b> ${safe(resident?.phone)}</p>
+        <p><b>Problem:</b> ${safe(c.complaint_type)}</p>
+        <p><b>Area:</b> ${safe(area?.area_name)}, ${safe(area?.city)}</p>
+        <p><b>Location:</b> ${safe(c.location_details)}</p>
+        <p><b>GPS:</b> ${safe(c.latitude || "-")}, ${safe(c.longitude || "-")}</p>
+        <p><b>Description:</b> ${safe(c.description)}</p>
+        <p><b>Priority:</b> ${safe(c.priority)}</p>
+        <p><b>Status:</b> ${statusBadge(c.status)}</p>
+    `;
+
+    if(c.image_path && /^data:image\/(jpeg|png|webp);base64,/.test(c.image_path)) {
+        const image = document.createElement("img");
+        image.src = c.image_path;
+        image.alt = "Complaint photograph";
+        el("detailContent").appendChild(image);
+    }
+
+    el("assignTeam").innerHTML =
+        '<option value="">Select maintenance team</option>' +
+        db.Maintenance_Teams.filter(t => t.availability==="Available").map(t =>
+            `<option value="${safe(t.team_id)}">${safe(t.team_name)}</option>`
+        ).join("");
+
+    el("updateStatus").value = c.status;
+    el("remarks").value = "";
+
+    el("complaintDetails").hidden = false;
+
+    el("complaintDetails").scrollIntoView({behavior:"smooth"});
+}
+
+/* ADD MAINTENANCE TEAM */
+
+el("teamForm").addEventListener("submit",function(e) {
+    e.preventDefault();
+
+    if(!requireAdmin()) return;
+
+    const db = getDB();
+
+    db.Maintenance_Teams.push({
+        team_id: createID("TEAM"),
+        team_name: val("teamName"),
+        team_leader: val("teamLeader"),
+        phone: val("teamPhone"),
+        availability: val("availability")
+    });
+
+    if(!saveDB(db)) return;
+
+    this.reset();
+    renderAdmin();
+
+    toast("Maintenance team added!");
+});
+
+el("teamRows").addEventListener("click",e => {
+    const button = e.target.closest("[data-team]");
+
+    if(!button || !requireAdmin()) return;
+
+    const db = getDB();
+
+    const team = db.Maintenance_Teams.find(t => t.team_id===button.dataset.team);
+
+    if(!team) return;
+
+    team.availability = team.availability==="Available"
+        ? "Unavailable" : "Available";
+
+    if(saveDB(db)) {
+        renderAdmin();
+        toast("Team availability updated.");
+    }
+});
+
+/* ASSIGN COMPLAINT */
+
+function assignComplaint() {
+    if(!requireAdmin()) return;
+
+    const teamID = val("assignTeam");
+
+    if(!teamID) {
+        toast("Please select a maintenance team.");
+        return;
+    }
+
+    const db = getDB();
+
+    const c = db.Complaints.find(x => x.complaint_id===selectedComplaint);
+    const team = db.Maintenance_Teams.find(t => t.team_id===teamID);
+
+    if(!c || !team || team.availability!=="Available") {
+        toast("Selected team is unavailable.");
+        return;
+    }
+
+    if(c.status==="Resolved") {
+        toast("This complaint has already been resolved.");
+        return;
+    }
+
+    db.Assignments.push({
+        assignment_id: createID("ASG"),
+        complaint_id: c.complaint_id,
+        team_id: teamID,
+        admin_id: "ADMIN-01",
+        assigned_date: now()
+    });
+
+    db.Complaint_Status_History.push({
+        history_id: createID("HIS"),
+        complaint_id: c.complaint_id,
+        old_status: c.status,
+        new_status: "Assigned",
+        updated_by: "Admin",
+        remarks: "Assigned to "+team.team_name,
+        updated_at: now()
+    });
+
+    c.status = "Assigned";
+
+    if(!saveDB(db)) return;
+
+    renderAdmin();
+    openComplaint(c.complaint_id);
+
+    toast("Maintenance team assigned successfully!");
+}
+
+/* UPDATE COMPLAINT STATUS */
+
+function updateComplaint() {
+    if(!requireAdmin()) return;
+
+    const db = getDB();
+
+    const c = db.Complaints.find(x => x.complaint_id===selectedComplaint);
+
+    if(!c) return;
+
+    const newStatus = val("updateStatus");
+    const remarks = val("remarks");
+
+    const allowed = ["Pending","Assigned","In Progress","Resolved"];
+
+    if(!allowed.includes(newStatus)) return;
+
+    const hasAssignment = db.Assignments.some(a =>
+        a.complaint_id===c.complaint_id
+    );
+
+    if(newStatus!=="Pending" && !hasAssignment) {
+        toast("Assign a maintenance team first.");
+        return;
+    }
+
+    db.Complaint_Status_History.push({
+        history_id: createID("HIS"),
+        complaint_id: c.complaint_id,
+        old_status: c.status,
+        new_status: newStatus,
+        updated_by: "Admin",
+        remarks: remarks || "Complaint status updated.",
+        updated_at: now()
+    });
+
+    c.status = newStatus;
+
+    if(!saveDB(db)) return;
+
+    renderAdmin();
+
+    el("complaintDetails").hidden = true;
+
+    toast("Complaint status and response saved!");
+}
+
+/* CONTACT MESSAGES */
+
+el("contactForm").addEventListener("submit",function(e) {
+    e.preventDefault();
+
+    const db = getDB();
+
+    db.Contact_Messages.push({
+        name: val("contactName"),
+        email: val("contactEmail"),
+        message: val("contactMessage"),
+        date: now()
+    });
+
+    if(!saveDB(db)) return;
+
+    this.reset();
+
+    toast("Message saved successfully in the demo!");
+});
+
+/* ADMIN LOGOUT */
+
+function logout() {
+    sessionStorage.removeItem("aquacareAdmin");
+
+    el("logoutModal").hidden = true;
+    el("complaintDetails").hidden = true;
+
+    selectedComplaint = null;
+
+    location.hash = "home";
+
+    toast("Logged out successfully.");
+}
+
+/* INITIALIZE */
+
+window.addEventListener("storage",e => {
+    if(e.key === DB_KEY && isAdmin()) renderAdmin();
+});
+
+navigate();
+
+</script>
+
+</body>
+</html>
